@@ -1,0 +1,112 @@
+{
+  "name": "parquet-explorer",
+  "publisher": "winse",
+  "displayName": "Parquet Explorer",
+  "description": "Professional Parquet file viewer with interactive data table, schema display, and export capabilities. Double-click to open .parquet files directly.",
+  "icon": "images/logo.png",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.78.0"
+  },
+  "categories": [
+    "Visualization"
+  ],
+  "keywords": [
+    "parquet",
+    "apache parquet",
+    "explorer",
+    "viewer",
+    "data",
+    "schema"
+  ],
+  "activationEvents": [
+    "onCustomEditor:parquet-explorer.parquetEditor",
+    "onCommand:parquet-explorer.open"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "parquet-explorer.open",
+        "title": "Open in Parquet Explorer"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceExtname == .parquet",
+          "command": "parquet-explorer.open",
+          "group": "navigation"
+        }
+      ]
+    },
+    "customEditors": [
+      {
+        "viewType": "parquet-explorer.parquetEditor",
+        "displayName": "Parquet Explorer",
+        "selector": [
+          {
+            "filenamePattern": "*.parquet"
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "clean": "if exist dist rmdir /s /q dist & if exist *.vsix del /q *.vsix",
+    "compile": "npm run check-types && node esbuild.config.js",
+    "check-types": "tsc --noEmit",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.config.js --watch",
+    "watch:tsc": "tsc --noEmit --watch",
+    "package": "npm run check-types && node esbuild.config.js --production",
+    "pkg": "vsce package",
+    "publish": "vsce publish",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "npm run lint && node ./test/runTest.js"
+  },
+  "dependencies": {
+    "hyparquet": "^0.4.0",
+    "prismjs": "^1.30.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/prismjs": "^1.26.3",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@types/vscode": "^1.78.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vscode/test-electron": "^2.3.0",
+    "esbuild": "^0.27.0",
+    "esbuild-sass-plugin": "^3.6.0",
+    "eslint": "^8.39.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.2.5",
+    "sass": "^1.97.3",
+    "typescript": "^5.0.4"
+  },
+  "repository": {
+    "url": "git+https://github.com/winse/parquet-explorer.git"
+  },
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "author": "winse (https://github.com/winse)",
+  "bugs": {
+    "url": "https://github.com/winse/parquet-explorer/issues"
+  },
+  "homepage": "https://github.com/winse/parquet-explorer#readme"
+}

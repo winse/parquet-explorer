@@ -1,0 +1,76 @@
+@use "./variables" as *;
+@use "./panels";
+
+@import "@blueprintjs/core/lib/css/blueprint.css";
+@import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+@import "@blueprintjs/table/lib/css/table.css";
+
+* {
+    box-sizing: border-box;
+
+    &:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    padding: 8px;
+
+    &.mode-schema .schema-section {
+        flex: 1;
+    }
+
+    &.mode-records .records-section {
+        flex: 1;
+    }
+
+    &.mode-both {
+        .schema-section {
+            flex: 0 0 var(--left-width);
+            min-width: 200px;
+        }
+
+        .records-section {
+            flex: 1;
+        }
+    }
+}
+
+.resize-divider {
+    cursor: col-resize;
+    margin: 2px !important;
+    opacity: 0;
+    z-index: 100;
+
+    &:hover,
+    &.is-resizing {
+        background-color: var(--vscode-list-hoverBackground);
+    }
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 16px;
+}

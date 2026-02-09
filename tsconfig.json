@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "lib": [
+      "ES2020"
+    ],
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "outDir": "parquet-explorer/dist",
+    "rootDir": "./",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*"
+      ]
+    }
+  },
+  "include": [
+    "parquet-explorer/src/**/*.ts",
+    "parquet-explorer/src/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "parquet-explorer/dist",
+    "test",
+    "webview",
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ],
+  "references": [
+    {
+      "path": "./webview/tsconfig.json"
+    }
+  ]
+}
