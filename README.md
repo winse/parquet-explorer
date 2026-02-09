@@ -1,13 +1,17 @@
 # Parquet Explorer
 
-A professional VS Code extension for viewing Apache Parquet files with an interactive interface.
+<div align="center">
 
 ![Parquet Explorer](images/logo.png)
+
+A professional VS Code extension for viewing Apache Parquet files with an interactive interface.
 
 [![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/winse.parquet-explorer?label=VS%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=winse.parquet-explorer)
 [![Open VSX](https://img.shields.io/open-vsx/v/winse/parquet-explorer?label=Open%20VSX)](https://open-vsx.org/extension/winse/parquet-explorer)
 
 ![UI Preview](images/ui.png)
+
+</div>
 
 ## Features
 
