@@ -2,3 +2,6 @@ dist
 node_modules
 
 examples
+
+*.vsix
+nul

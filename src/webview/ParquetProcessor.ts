@@ -143,7 +143,21 @@ export class ParquetProcessor {
   private schemaNodeToJSON(node: any): any {
     if (!node || !node.element) return null;
     const element = node.element;
-    const result: any = { name: element.name, type: element.type };
+    const typeNameMap: Record<number, string> = {
+      0: 'BOOLEAN',
+      1: 'INT32',
+      2: 'INT64',
+      3: 'INT96',
+      4: 'FLOAT',
+      5: 'DOUBLE',
+      6: 'BYTE_ARRAY',
+      7: 'FIXED_LEN_BYTE_ARRAY',
+    };
+    const resolvedType = typeof element.type === 'number'
+      ? (typeNameMap[element.type] || String(element.type))
+      : element.type;
+    const rawType = element.type === resolvedType ? undefined : element.type;
+    const result: any = { name: element.name, rawType, type: resolvedType };
     if (element.repetition_type) result.repetition_type = element.repetition_type;
     if (element.logical_type) result.logical_type = element.logical_type;
     if (node.children && Array.isArray(node.children) && node.children.length > 0) {

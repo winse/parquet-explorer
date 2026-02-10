@@ -110,7 +110,10 @@ export const RecordsPanel: React.FC<RecordsPanelProps> = ({ records, header, fil
         </div>
       </SectionCard>
       <div className="panel-footer pagination" style={{ flexShrink: 0 }}>
-        <div className="pagination-left"><Text>Page Size</Text><HTMLSelect value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }} options={[10, 25, 50, 100, 500]} minimal /></div>
+        <div className="pagination-left">
+          <Text className="page-size-label">Page Size</Text>
+          <HTMLSelect value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setCurrentPage(1); }} options={[10, 25, 50, 100, 500]} minimal />
+        </div>
         <div className="pagination-center">
           <ButtonGroup minimal>
             <Button icon="double-chevron-left" disabled={currentPage === 1} onClick={() => setCurrentPage(1)} title="First Page">First</Button>
@@ -120,7 +123,14 @@ export const RecordsPanel: React.FC<RecordsPanelProps> = ({ records, header, fil
             <Button rightIcon="double-chevron-right" disabled={currentPage === totalPages || totalPages === 0} onClick={() => setCurrentPage(totalPages)} title="Last Page">Last</Button>
           </ButtonGroup>
         </div>
-        <div className="pagination-right"><Tag>Total: {sortedRecords.length} records ({totalPages} pages)</Tag></div>
+        <div className="pagination-right">
+          <Tag className="pagination-total">
+            Total: {sortedRecords.length} records ({totalPages} pages)
+          </Tag>
+          <Tag className="pagination-total-compact">
+            {sortedRecords.length}({totalPages})
+          </Tag>
+        </div>
       </div>
     </Section>
   );

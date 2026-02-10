@@ -72,6 +72,30 @@
                 display: flex;
                 align-items: center;
             }
+
+            // Compact pagination labels on narrow widths
+            // 整个页面宽度小于 888px 时，隐藏分页标签
+            @media (max-width: 888px) {
+                .pagination-center .bp6-button .bp6-button-text {
+                    display: none;
+                }
+
+                .pagination-center .bp6-button.bp6-active .bp6-button-text {
+                    display: inline;
+                }
+            }
+
+            @media (max-width: 600px) {
+                .page-size-label {
+                    display: none;
+                }
+                .pagination-total {
+                    display: none;
+                }
+                .pagination-total-compact {
+                    display: inline-flex;
+                }
+            }
         }
     }
 
@@ -95,4 +119,12 @@
         background-color: transparent !important;
         color: var(--vscode-editor-foreground) !important;
     }
+}
+
+.records-section {
+    overflow: hidden;
+}
+
+.pagination-total-compact {
+    display: none;
 }
