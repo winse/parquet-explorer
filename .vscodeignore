@@ -60,6 +60,7 @@ nul
 images/ui.png
 images/logo.svg
 samples/
+examples/
 esbuild.config.js
 tsconfig.json
 tsconfig.eslint.json

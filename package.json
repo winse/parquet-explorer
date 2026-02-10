@@ -4,7 +4,7 @@
   "displayName": "Parquet Explr (Parquet Explorer)",
   "description": "Professional Parquet file viewer with interactive data table, schema display, and export capabilities. Double-click to open .parquet files directly.",
   "icon": "images/logo.png",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "vscode": "^1.78.0"
   },
