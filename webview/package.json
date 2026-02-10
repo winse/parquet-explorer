@@ -1,6 +1,6 @@
 {
-  "name": "parquet-explorer-webview",
-  "version": "0.1.0",
+  "name": "parquet-explr-webview",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "scripts": {

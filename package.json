@@ -1,10 +1,10 @@
 {
-  "name": "parquet-explorer",
+  "name": "parquet-explr",
   "publisher": "winse",
-  "displayName": "Parquet Explorer",
+  "displayName": "Parquet Explr (Parquet Explorer)",
   "description": "Professional Parquet file viewer with interactive data table, schema display, and export capabilities. Double-click to open .parquet files directly.",
   "icon": "images/logo.png",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "engines": {
     "vscode": "^1.78.0"
   },
@@ -20,8 +20,8 @@
     "schema"
   ],
   "activationEvents": [
-    "onCustomEditor:parquet-explorer.parquetEditor",
-    "onCommand:parquet-explorer.open"
+    "onCustomEditor:parquet-explr.parquetEditor",
+    "onCommand:parquet-explr.open"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -35,14 +35,14 @@
       "editor/title": [
         {
           "when": "resourceExtname == .parquet",
-          "command": "parquet-explorer.open",
+          "command": "parquet-explr.open",
           "group": "navigation"
         }
       ]
     },
     "customEditors": [
       {
-        "viewType": "parquet-explorer.parquetEditor",
+        "viewType": "parquet-explr.parquetEditor",
         "displayName": "Parquet Explorer",
         "selector": [
           {
@@ -103,7 +103,7 @@
   "repository": {
     "url": "git+https://github.com/winse/parquet-explorer.git"
   },
-  "license": "SEE LICENSE IN LICENSE.txt",
+  "license": "SEE LICENSE IN LICENSE",
   "author": "winse (https://github.com/winse)",
   "bugs": {
     "url": "https://github.com/winse/parquet-explorer/issues"

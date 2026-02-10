@@ -6,8 +6,8 @@
 
 A professional VS Code extension for viewing Apache Parquet files with an interactive interface.
 
-[![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/winse.parquet-explorer?label=VS%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=winse.parquet-explorer)
-[![Open VSX](https://img.shields.io/open-vsx/v/winse/parquet-explorer?label=Open%20VSX)](https://open-vsx.org/extension/winse/parquet-explorer)
+[![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/winse.parquet-explr?label=VS%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=winse.parquet-explr)
+[![Open VSX](https://img.shields.io/open-vsx/v/winse/parquet-explr?label=Open%20VSX)](https://open-vsx.org/extension/winse/parquet-explr)
 
 ![UI Preview](images/ui.png)
 
@@ -38,7 +38,7 @@ A professional VS Code extension for viewing Apache Parquet files with an intera
 npm run package
 
 # Install the VSIX
-code --install-extension parquet-explorer-0.1.0.vsix
+code --install-extension parquet-explr-0.1.0.vsix
 ```
 
 ## Usage
@@ -74,8 +74,8 @@ code --install-extension parquet-explorer-0.1.0.vsix
 
 ```bash
 # Clone the repository
-git clone https://github.com/winse/parquet-explorer.git
-cd parquet-explorer
+git clone https://github.com/winse/parquet-explr.git
+cd parquet-explr
 
 # Install dependencies
 npm install
@@ -113,7 +113,7 @@ npm run pkg
 ### Project Structure
 
 ```
-parquet-explorer/
+parquet-explr/
 ├── src/
 │   ├── commands/           # VS Code commands
 │   │   └── openParquetViewer.ts
