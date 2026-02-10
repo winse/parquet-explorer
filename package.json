@@ -1,10 +1,10 @@
 {
   "name": "parquet-explr",
   "publisher": "winse",
-  "displayName": "Parquet Explr (Parquet Explorer)",
+  "displayName": "Parquet Explorer Solo",
   "description": "Professional Parquet file viewer with interactive data table, schema display, and export capabilities. Double-click to open .parquet files directly.",
   "icon": "images/logo.png",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "engines": {
     "vscode": "^1.78.0"
   },
@@ -27,7 +27,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "parquet-explorer.open",
+        "command": "parquet-explr.open",
         "title": "Open in Parquet Explorer"
       }
     ],
@@ -59,14 +59,15 @@
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.config.js --watch",
     "watch:tsc": "tsc --noEmit --watch",
-    "package": "npm run check-types && node esbuild.config.js --production",
+    "compile:prod": "npm run check-types && node esbuild.config.js --production",
     "pkg": "vsce package",
     "publish": "vsce publish",
     "lint": "eslint . --ext .ts,.tsx",
     "test": "npm run lint && node ./test/runTest.js"
   },
   "dependencies": {
-    "hyparquet": "^0.4.0",
+    "apache-arrow": "^14.0.2",
+    "parquet-wasm": "^0.6.0",
     "prismjs": "^1.30.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

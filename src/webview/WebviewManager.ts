@@ -148,7 +148,7 @@ export class WebviewManager {
     const context: MessageHandlerContext = {
       panel: this.panel,
       extensionUri: this.context.extensionUri,
-      filePath: fileName,
+      filePath,
     };
 
     this.panel.webview.onDidReceiveMessage(
@@ -189,6 +189,7 @@ export class WebviewManager {
         total: data.total,
       });
     } catch (error: any) {
+      console.error('[WebviewManager] loadFile error', { filePath, error });
       this.panel.webview.postMessage({
         type: 'error',
         message: error.message || 'Failed to load Parquet file',

@@ -4,7 +4,9 @@ import { ParquetProcessor } from './ParquetProcessor';
 
 export class MessageHandler {
   public handle(message: any, context: MessageHandlerContext): void {
-    console.log('MessageHandler received:', message.type, message);
+    console.log('[MessageHandler] received', message.type, message, {
+      filePath: context.filePath,
+    });
     const { type, data } = message;
 
     switch (type) {
@@ -68,7 +70,17 @@ export class MessageHandler {
         header: metadata.columns,
         total: metadata.numRows,
       });
+
+      if (metadata.numRows > records.length) {
+        context.panel.webview.postMessage({
+          type: 'showNotification',
+          level: 'warning',
+          message: `Loaded ${records.length.toLocaleString()} of ${metadata.numRows.toLocaleString()} rows for performance. ` +
+            'Use export to get full data.',
+        });
+      }
     } catch (error: any) {
+      console.error('[MessageHandler] handleGetData error', { filePath: context.filePath, error });
       context.panel.webview.postMessage({
         type: 'error',
         message: error.message || 'Failed to load Parquet file',

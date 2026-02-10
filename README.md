@@ -20,7 +20,7 @@ A professional VS Code extension for viewing Apache Parquet files with an intera
 - **Export Capabilities** - Export data to CSV, JSON, or other formats
 - **Native Integration** - Double-click .parquet files to open directly in VS Code
 - **Theme Support** - Adapts to VS Code light and dark themes
-- **Performance** - Efficient parsing using hyparquet WASM module
+- **Performance** - Efficient parsing using parquet-wasm with ZSTD support
 
 ## Installation
 
@@ -38,7 +38,7 @@ A professional VS Code extension for viewing Apache Parquet files with an intera
 npm run package
 
 # Install the VSIX
-code --install-extension parquet-explr-0.1.0.vsix
+code --install-extension parquet-explr-0.1.3.vsix
 ```
 
 ## Usage
@@ -151,7 +151,7 @@ parquet-explr/
 - **BlueprintJS** - UI component library
 - **Vite** - Fast webview bundler
 - **esbuild** - Extension bundler
-- **hyparquet** - High-performance Parquet parser (WASM)
+- **parquet-wasm** - High-performance Parquet parser (WASM) with ZSTD support
 - **TypeScript** - Type-safe development
 - **Sass** - CSS preprocessing
 
@@ -177,5 +177,5 @@ parquet-explr/
 ## Acknowledgments
 
 - [Apache Parquet](https://parquet.apache.org/) - Columnar storage format
-- [hyparquet](https://github.com/hyparquet/hyparquet) - High-performance Parquet library
+- [parquet-wasm](https://github.com/kylebarron/parquet-wasm) - High-performance Parquet library with ZSTD support
 - [BlueprintJS](https://blueprintjs.com/) - React UI toolkit

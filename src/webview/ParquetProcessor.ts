@@ -1,13 +1,19 @@
 import * as vscode from 'vscode';
-import { parquetRead, parquetMetadataAsync, parquetSchema, toJson } from 'hyparquet';
+import { tableFromIPC, Table, Field } from 'apache-arrow';
+import { readParquet } from 'parquet-wasm/node';
 import { ParquetData } from '../types/parquet';
 
-interface ParquetBuffer {
-  byteLength: number;
-  slice(start: number, end?: number): Promise<ArrayBuffer>;
-}
-
 export class ParquetProcessor {
+  private static readonly maxRecords = 20000;
+  private static readonly supportedCodecs = new Set([
+    'UNCOMPRESSED',
+    'SNAPPY',
+    'GZIP',
+    'BROTLI',
+    'ZSTD',
+    'LZ4_RAW',
+  ]);
+
   private normalizeCellValue(value: any): string {
     if (value === null || value === undefined) return '';
     if (value instanceof Date) return value.toString();
@@ -23,146 +29,106 @@ export class ParquetProcessor {
   }
 
   public async processFile(filePath: string): Promise<ParquetData> {
+    let wasmTable: { intoIPCStream: () => Uint8Array; drop?: () => void } | null = null;
+
     try {
-      console.log('🔍 开始处理 Parquet 文件:', filePath);
+      console.log('[ParquetProcessor] start', { filePath });
       const arrayBuffer = await this.readFile(filePath);
-      const buffer = this.createAsyncBuffer(arrayBuffer);
+      const parquetUint8Array = new Uint8Array(arrayBuffer);
 
-      // 获取元数据
-      const metadata = await parquetMetadataAsync(buffer);
-      console.log('✅ 元数据读取完成, 行数:', metadata.num_rows);
+      wasmTable = readParquet(parquetUint8Array);
+      const arrowTable = tableFromIPC(wasmTable.intoIPCStream());
 
-      // 获取 Schema
-      const schema = parquetSchema(metadata);
-      console.log('✅ Schema 解析完成');
-
-      // 提取列名 (用于表头和记录映射)
-      const columns = this.extractColumnNames(schema);
-      console.log('✅ 列名提取完成:', columns.length, '列');
-
-      // 读取数据记录 (使用回调方式)
-      const records = await this.readRecords(buffer, metadata, columns);
-      console.log('✅ 记录读取完成, 共', records.length, '条');
+      const schema = this.schemaFromArrow(arrowTable);
+      const columns = arrowTable.schema.fields.map((field) => field.name);
+      const records = this.tableToRecords(arrowTable, columns, ParquetProcessor.maxRecords);
 
       return {
-        schema: this.schemaToJSON(schema),
+        schema,
         records,
         metadata: {
-          numRows: Number(metadata.num_rows),
+          numRows: Number(arrowTable.numRows),
           columns,
-          rowGroups: metadata.row_groups?.length || 1,
-          compression: metadata.compression_codec,
+          rowGroups: 1,
+          compression: 'UNKNOWN',
         },
       };
     } catch (error: any) {
-      console.error('❌ 处理 Parquet 文件失败:', error);
-      throw new Error(`Parquet 处理错误: ${error.message || String(error)}`);
+      console.error('[ParquetProcessor] failed', { filePath, error });
+      const message = error?.message || String(error);
+
+      if (this.isCompressionError(message)) {
+        const supportedList = Array.from(ParquetProcessor.supportedCodecs).join(', ');
+        throw new Error(
+          `Unsupported compression codec. ` +
+          `This viewer supports ${supportedList}. ` +
+          `Please re-encode the file using a supported codec (e.g. ZSTD or SNAPPY).`
+        );
+      }
+
+      throw new Error(`Parquet processing error: ${message}`);
+    } finally {
+      if (wasmTable?.drop) {
+        try {
+          wasmTable.drop();
+        } catch {
+          // Ignore drop errors.
+        }
+      }
     }
   }
 
-  private async readRecords(buffer: ParquetBuffer, metadata: any, columns: string[]): Promise<Record<string, any>[]> {
-    return new Promise((resolve, reject) => {
-      const records: Record<string, any>[] = [];
-
-      parquetRead({
-        file: buffer,
-        metadata,
-        onComplete: (rows: any[][]) => {
-          // 转换行数据为对象数组
-          const convertedRecords = rows.map((row: any[]) => {
-            const obj: Record<string, any> = {};
-            row.forEach((cell, idx) => {
-              const columnName = columns[idx];
-              if (columnName) {
-                obj[columnName] = this.normalizeCellValue(cell);
-              }
-            });
-            return obj;
-          });
-          resolve(convertedRecords);
-        },
-      }).catch((error: Error) => {
-        reject(error);
-      });
-    });
+  private isCompressionError(message: string): boolean {
+    const lowered = message.toLowerCase();
+    return lowered.includes('compression') || lowered.includes('codec') || lowered.includes('parquet unsupported');
   }
 
   private async readFile(filePath: string): Promise<ArrayBuffer> {
     const uri = vscode.Uri.file(filePath);
     const buffer = await vscode.workspace.fs.readFile(uri);
-    // Normalize to a standalone ArrayBuffer (no offset) for DataView consumers.
     return buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength) as ArrayBuffer;
   }
 
-  private createAsyncBuffer(arrayBuffer: ArrayBuffer): ParquetBuffer {
-    const uint8Array = new Uint8Array(arrayBuffer);
-    return {
-      byteLength: uint8Array.length,
-      slice: async (start: number, end?: number) => {
-        if (end === undefined) {
-          return arrayBuffer.slice(start);
-        }
-        return arrayBuffer.slice(start, end);
-      },
-    };
-  }
+  private tableToRecords(table: Table, columns: string[], maxRecords: number): Record<string, any>[] {
+    const rowCount = Math.min(table.numRows, maxRecords);
+    const records: Record<string, any>[] = new Array(rowCount);
+    const vectors = columns.map((_, index) => table.getChildAt(index));
 
-  private extractColumnNames(schema: any): string[] {
-    const columns: string[] = [];
-    if (!schema || !schema.children) return columns;
-    this.traverseSchema(schema, columns);
-    return columns;
-  }
-
-  private traverseSchema(node: any, columns: string[]): void {
-    if (!node) return;
-    if (node.element && node.element.name && (!node.children || node.children.length === 0)) {
-      columns.push(node.element.name);
-      return;
-    }
-    if (node.children && Array.isArray(node.children)) {
-      for (const child of node.children) {
-        this.traverseSchema(child, columns);
+    for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+      const row: Record<string, any> = {};
+      for (let colIndex = 0; colIndex < columns.length; colIndex += 1) {
+        const vector = vectors[colIndex];
+        if (!vector) continue;
+        row[columns[colIndex]] = this.normalizeCellValue(vector.get(rowIndex));
       }
+      records[rowIndex] = row;
     }
+
+    return records;
   }
 
-  private schemaToJSON(schema: any): any {
-    if (!schema) return null;
+  private schemaFromArrow(table: Table): any {
+    const schema = table.schema;
+    return {
+      name: 'schema',
+      num_columns: schema.fields.length,
+      row_groups: 1,
+      children: schema.fields.map((field) => this.fieldToJSON(field)),
+    };
+  }
+
+  private fieldToJSON(field: Field<any>): any {
+    const type = field.type as any;
     const result: any = {
-      name: schema.name,
-      num_columns: schema.num_columns,
-      row_groups: schema.row_groups?.length || 0,
+      name: field.name,
+      type: typeof type?.toString === 'function' ? type.toString() : String(type),
+      repetition_type: field.nullable ? 'OPTIONAL' : 'REQUIRED',
     };
-    if (schema.children && Array.isArray(schema.children)) {
-      result.children = schema.children.map((child: any) => this.schemaNodeToJSON(child));
-    }
-    return result;
-  }
 
-  private schemaNodeToJSON(node: any): any {
-    if (!node || !node.element) return null;
-    const element = node.element;
-    const typeNameMap: Record<number, string> = {
-      0: 'BOOLEAN',
-      1: 'INT32',
-      2: 'INT64',
-      3: 'INT96',
-      4: 'FLOAT',
-      5: 'DOUBLE',
-      6: 'BYTE_ARRAY',
-      7: 'FIXED_LEN_BYTE_ARRAY',
-    };
-    const resolvedType = typeof element.type === 'number'
-      ? (typeNameMap[element.type] || String(element.type))
-      : element.type;
-    const rawType = element.type === resolvedType ? undefined : element.type;
-    const result: any = { name: element.name, rawType, type: resolvedType };
-    if (element.repetition_type) result.repetition_type = element.repetition_type;
-    if (element.logical_type) result.logical_type = element.logical_type;
-    if (node.children && Array.isArray(node.children) && node.children.length > 0) {
-      result.children = node.children.map((child: any) => this.schemaNodeToJSON(child));
+    if (Array.isArray(type?.children) && type.children.length > 0) {
+      result.children = type.children.map((child: Field<any>) => this.fieldToJSON(child));
     }
+
     return result;
   }
 }
