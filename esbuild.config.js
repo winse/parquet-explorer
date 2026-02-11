@@ -1,5 +1,8 @@
 const esbuild = require('esbuild');
+const fs = require('fs');
+const path = require('path');
 const { sassPlugin } = require('esbuild-sass-plugin');
+
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
 
@@ -11,6 +14,19 @@ const sharedConfig = {
   target: ['es2020'],
 };
 
+function copyParquetWasmBinary() {
+  const wasmSource = path.join(
+    process.cwd(),
+    'node_modules',
+    'parquet-wasm',
+    'node',
+    'parquet_wasm_bg.wasm',
+  );
+  const wasmTarget = path.join(process.cwd(), 'dist', 'parquet_wasm_bg.wasm');
+  fs.mkdirSync(path.dirname(wasmTarget), { recursive: true });
+  fs.copyFileSync(wasmSource, wasmTarget);
+}
+
 async function build() {
   try {
     const extensionConfig = {
@@ -19,7 +35,6 @@ async function build() {
       bundle: true,
       format: 'cjs',
       platform: 'node',
-      packages: 'external',
       outfile: 'dist/extension.js',
       external: ['vscode'],
     };
@@ -49,17 +64,19 @@ async function build() {
     if (watch) {
       const ctxExtension = await esbuild.context(extensionConfig);
       const ctxWebview = await esbuild.context(webviewConfig);
-      console.log('👀 Watching for changes...');
+      copyParquetWasmBinary();
+      console.log('Watching for changes...');
       await Promise.all([ctxExtension.watch(), ctxWebview.watch()]);
     } else {
       await Promise.all([
         esbuild.build(extensionConfig),
         esbuild.build(webviewConfig),
       ]);
-      console.log('✅ Build completed successfully');
+      copyParquetWasmBinary();
+      console.log('Build completed successfully');
     }
   } catch (error) {
-    console.error('❌ Build failed:', error);
+    console.error('Build failed:', error);
     process.exit(1);
   }
 }

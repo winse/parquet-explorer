@@ -38,7 +38,7 @@ A professional VS Code extension for viewing Apache Parquet files with an intera
 npm run package
 
 # Install the VSIX
-code --install-extension parquet-explr-0.1.3.vsix
+code --install-extension parquet-explr-0.2.0.vsix
 ```
 
 ## Usage

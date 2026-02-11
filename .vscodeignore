@@ -19,7 +19,7 @@ jsconfig.json
 # Build output (re-generated during build)
 # dist/ - Included! Required for extension to work
 
-# Dependencies (bundled by esbuild)
+# Dependencies are bundled into dist; exclude root dependencies
 node_modules/
 
 # Source files (bundled into dist/)
