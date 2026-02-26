@@ -109,6 +109,61 @@
 }
 
 .schema-section-container {
+    .schema-content {
+        display: block;
+    }
+
+    .schema-field-list {
+        padding: 8px 0;
+    }
+
+    .schema-field-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 28px;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--vscode-panel-border, rgba(128, 128, 128, 0.25));
+    }
+
+    .schema-field-type {
+        width: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        opacity: 0.95;
+    }
+
+    .schema-field-type.number {
+        color: #2ea8df;
+    }
+
+    .schema-field-type.string {
+        color: #f36b6b;
+    }
+
+    .schema-field-type.date {
+        color: #8f8f8f;
+    }
+
+    .schema-field-type.bool {
+        color: #b88cff;
+    }
+
+    .schema-field-type.complex {
+        color: #d9a441;
+    }
+
+    .schema-field-name {
+        color: var(--vscode-editor-foreground);
+        font-size: 0.92rem;
+        line-height: 1.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
     .schema-content pre {
         margin: 0;
         padding: 12px;
