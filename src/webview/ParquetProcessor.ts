@@ -112,7 +112,7 @@ export class ParquetProcessor {
 
     try {
       const arrayBuffer = await this.readFile(filePath);
-      const arrayBuffer = await this.readFile(filePath);
+
       const parquetUint8Array = new Uint8Array(arrayBuffer);
 
       wasmTable = readParquet(parquetUint8Array);
