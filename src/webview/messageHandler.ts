@@ -60,8 +60,16 @@ export class MessageHandler {
         message: 'Reading Parquet file...',
       });
 
+      const config = vscode.workspace.getConfiguration('parquet-explr');
+      const timestampFormat = config.get<string>('timestampFormat', 'YYYY-MM-DD HH:mm:ss.SSS');
+      const dateFormat = config.get<string>('dateFormat', 'YYYY-MM-DD');
+
       const parquetProcessor = new ParquetProcessor();
-      const { schema, records, metadata } = await parquetProcessor.processFile(context.filePath);
+      const { schema, records, metadata } = await parquetProcessor.processFile(
+        context.filePath,
+        timestampFormat || 'YYYY-MM-DD HH:mm:ss.SSS',
+        dateFormat || 'YYYY-MM-DD'
+      );
 
       context.panel.webview.postMessage({
         type: 'data',

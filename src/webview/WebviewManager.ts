@@ -24,6 +24,9 @@ export class WebviewManager {
       this.panel.reveal(vscode.ViewColumn.One);
       this.panel.title = `Parquet Explorer: ${fileName}`;
       const cached = this.dataCache.get(filePath);
+      const config = vscode.workspace.getConfiguration('parquet-explr');
+      const timestampFormat = config.get<string>('timestampFormat', 'YYYY-MM-DD HH:mm:ss.SSS');
+
       if (cached) {
         this.panel.webview.postMessage({
           type: 'data',
@@ -42,24 +45,13 @@ export class WebviewManager {
   }
 
   public createOrShowWithPanel(filePath: string, panel: vscode.WebviewPanel): void {
-    if (this.panel === panel && this.initialized) {
-      panel.reveal(vscode.ViewColumn.One);
-      const cached = this.dataCache.get(filePath);
-      if (cached) {
-        panel.webview.postMessage({
-          type: 'data',
-          schema: cached.schema,
-          records: cached.records,
-          header: cached.header,
-          total: cached.total,
-        });
-      }
-      return;
-    }
-
     this.panel = panel;
     this.currentFilePath = filePath;
     const fileName = path.basename(filePath);
+
+    const config = vscode.workspace.getConfiguration('parquet-explr');
+    const timestampFormat = config.get<string>('timestampFormat', 'YYYY-MM-DD HH:mm:ss.SSS');
+
     panel.title = fileName;
     panel.webview.options = {
       enableScripts: true,
@@ -170,7 +162,15 @@ export class WebviewManager {
         message: 'Reading Parquet file...',
       });
 
-      const { schema, records, metadata } = await this.parquetProcessor.processFile(filePath);
+      const config = vscode.workspace.getConfiguration('parquet-explr');
+      const timestampFormat = config.get<string>('timestampFormat', 'YYYY-MM-DD HH:mm:ss.SSS');
+      const dateFormat = config.get<string>('dateFormat', 'YYYY-MM-DD');
+
+      const { schema, records, metadata } = await this.parquetProcessor.processFile(
+        filePath,
+        timestampFormat || 'YYYY-MM-DD HH:mm:ss.SSS',
+        dateFormat || 'YYYY-MM-DD'
+      );
 
       const data: CachedParquetData = {
         schema,

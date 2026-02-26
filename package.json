@@ -4,7 +4,7 @@
   "displayName": "Parquet Explorer Solo",
   "description": "Professional Parquet file viewer with interactive data table, schema display, and export capabilities. Double-click to open .parquet files directly.",
   "icon": "images/logo.png",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "engines": {
     "vscode": "^1.78.0"
   },
@@ -19,10 +19,7 @@
     "data",
     "schema"
   ],
-  "activationEvents": [
-    "onCustomEditor:parquet-explr.parquetEditor",
-    "onCommand:parquet-explr.open"
-  ],
+  "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
@@ -50,7 +47,22 @@
           }
         ]
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Parquet Explorer Solo",
+      "properties": {
+        "parquet-explr.timestampFormat": {
+          "type": "string",
+          "default": "YYYY-MM-DD HH:mm:ss.SSS",
+          "description": "The format string for displaying timestamps. Follows date-and-time token conventions (e.g., YYYY-MM-DD HH:mm:ss.SSS)."
+        },
+        "parquet-explr.dateFormat": {
+          "type": "string",
+          "default": "YYYY-MM-DD",
+          "description": "The format string for displaying dates. Follows date-and-time token conventions (e.g., YYYY-MM-DD)."
+        }
+      }
+    }
   },
   "scripts": {
     "clean": "if exist dist rmdir /s /q dist & if exist *.vsix del /q *.vsix",
@@ -68,6 +80,7 @@
   },
   "dependencies": {
     "apache-arrow": "^14.0.2",
+    "date-and-time": "^4.3.0",
     "parquet-wasm": "^0.6.0",
     "prismjs": "^1.30.0",
     "react": "^18.3.1",
