@@ -21,6 +21,7 @@ A professional VS Code extension for viewing Apache Parquet files with an intera
 - **Native Integration** - Double-click .parquet files to open directly in VS Code
 - **Theme Support** - Adapts to VS Code light and dark themes
 - **Performance** - Efficient parsing using parquet-wasm with ZSTD support
+- **Timestamp Formatting** - Customizable datetime format via settings
 
 ## Installation
 
@@ -38,7 +39,7 @@ A professional VS Code extension for viewing Apache Parquet files with an intera
 npm run package
 
 # Install the VSIX
-code --install-extension parquet-explr-0.2.0.vsix
+code --install-extension parquet-explr-0.2.1.vsix
 ```
 
 ## Usage
