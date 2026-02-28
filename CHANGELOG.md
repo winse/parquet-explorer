@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-03-01
+
+### Changed
+
+- Migrated Parquet webview UI to shared `data-viewer` component library (aligned with `avro-explorer`)
+- Updated build pipeline to compile shared `data-viewer` before extension bundling
+- Synced webview package metadata and dependency usage for shared UI integration
+
+### Documentation
+
+- Updated README architecture and development sections to reflect shared `data-viewer` usage
+- Removed outdated webview structure descriptions from README
+
 ## [0.2.1] - 2026-02-26
 
 ### Added

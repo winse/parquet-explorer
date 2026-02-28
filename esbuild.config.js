@@ -29,6 +29,11 @@ function copyParquetWasmBinary() {
 
 async function build() {
   try {
+    const reactAlias = {
+      react: path.resolve(__dirname, 'node_modules', 'react'),
+      'react-dom': path.resolve(__dirname, 'node_modules', 'react-dom'),
+    };
+
     const extensionConfig = {
       ...sharedConfig,
       entryPoints: ['src/extension.ts'],
@@ -46,6 +51,9 @@ async function build() {
       format: 'esm',
       platform: 'browser',
       outfile: 'dist/webview.js',
+      alias: {
+        ...reactAlias,
+      },
       plugins: [sassPlugin()],
       loader: {
         '.tsx': 'tsx',

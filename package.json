@@ -4,7 +4,7 @@
   "displayName": "Parquet Explorer Solo",
   "description": "Professional Parquet file viewer with interactive data table, schema display, and export capabilities. Double-click to open .parquet files directly.",
   "icon": "images/logo.png",
-  "version": "0.2.1",
+  "version": "0.5.0",
   "engines": {
     "vscode": "^1.78.0"
   },
@@ -66,12 +66,13 @@
   },
   "scripts": {
     "clean": "if exist dist rmdir /s /q dist & if exist *.vsix del /q *.vsix",
-    "compile": "npm run check-types && node esbuild.config.js",
+    "build:common": "cd ../data-viewer && npm run clean && npm run build",
+    "compile": "npm run build:common && npm run check-types && node esbuild.config.js",
+    "compile:prod": "npm run build:common && npm run check-types && node esbuild.config.js --production",
     "check-types": "tsc --noEmit",
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.config.js --watch",
     "watch:tsc": "tsc --noEmit --watch",
-    "compile:prod": "npm run check-types && node esbuild.config.js --production",
     "package": "vsce package",
     "pkg": "npm run clean && npm run compile:prod && npm run package",
     "publish": "vsce publish",
