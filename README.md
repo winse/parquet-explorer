@@ -40,7 +40,7 @@ A professional VS Code extension for viewing Apache Parquet files with an intera
 npm run pkg
 
 # Install the VSIX
-code --install-extension parquet-explr-0.2.2.vsix
+code --install-extension parquet-explr-0.5.0.vsix
 ```
 
 ## Usage
@@ -48,8 +48,8 @@ code --install-extension parquet-explr-0.2.2.vsix
 ### Open Parquet files
 
 1. Double-click any `.parquet` file in Explorer
-2. Or right-click file -> `Open in Parquet Explorer`
-3. Or run command palette: `Parquet Explorer: Open`
+2. Or **right-click** -> **Open With...** -> `Parquet Explorer`
+3. Or run command palette: `Open in Parquet Explorer`
 
 ### Main interface
 
