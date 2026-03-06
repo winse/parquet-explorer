@@ -80,6 +80,7 @@ export class WebviewManager {
       panel: this.panel,
       extensionUri: this.context.extensionUri,
       filePath,
+      context: this.context,
     };
 
     panel.webview.onDidReceiveMessage(
@@ -141,6 +142,7 @@ export class WebviewManager {
       panel: this.panel,
       extensionUri: this.context.extensionUri,
       filePath,
+      context: this.context,
     };
 
     this.panel.webview.onDidReceiveMessage(
@@ -188,6 +190,7 @@ export class WebviewManager {
         header: data.header,
         total: data.total,
       });
+
     } catch (error: any) {
       console.error('[WebviewManager] loadFile error', { filePath, error });
       this.panel.webview.postMessage({

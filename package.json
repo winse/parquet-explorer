@@ -4,7 +4,7 @@
   "displayName": "Parquet Explorer Solo",
   "description": "Professional Parquet file viewer with interactive data table, schema display, and export capabilities. Double-click to open .parquet files directly.",
   "icon": "images/logo.png",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "engines": {
     "vscode": "^1.78.0"
   },
@@ -60,6 +60,26 @@
           "type": "string",
           "default": "YYYY-MM-DD",
           "description": "The format string for displaying dates. Follows date-and-time token conventions (e.g., YYYY-MM-DD)."
+        },
+        "parquet-explr.preference.previewPanelOpen": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the preview panel is open by default."
+        },
+        "parquet-explr.preference.previewPanelHeight": {
+          "type": "number",
+          "default": 25,
+          "description": "The default height of the preview panel in vh."
+        },
+        "parquet-explr.preference.viewMode": {
+          "type": "string",
+          "enum": [
+            "both",
+            "schema",
+            "records"
+          ],
+          "default": "both",
+          "description": "The default view mode for the explorer."
         }
       }
     }

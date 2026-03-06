@@ -1,3 +1,4 @@
+import * as vscode from 'vscode';
 /**
  * Parquet Schema 类型定义
  */
@@ -42,7 +43,8 @@ export type ParquetMessage =
   | { type: 'showNotification'; message: string; level: 'info' | 'warning' | 'error' };
 
 export interface MessageHandlerContext {
-  panel: any;
-  extensionUri: any;
+  panel: vscode.WebviewPanel;
+  extensionUri: vscode.Uri;
   filePath?: string;
+  context: vscode.ExtensionContext;
 }

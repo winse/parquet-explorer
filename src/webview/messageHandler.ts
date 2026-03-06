@@ -25,9 +25,70 @@ export class MessageHandler {
       case 'showNotification':
         this.showNotification(message, context);
         break;
+      case 'savePreviewPreference':
+        this.savePreviewPreference(message, context);
+        break;
+      case 'getPreviewPreference':
+        this.getPreviewPreference(context);
+        break;
+      case 'saveViewModePreference':
+        this.saveViewModePreference(message, context);
+        break;
+      case 'getViewModePreference':
+        this.getViewModePreference(context);
+        break;
       default:
         console.log('Unknown message type:', type, message);
     }
+  }
+
+  private savePreviewPreference(message: any, context: MessageHandlerContext): void {
+    const { isOpen, height } = message;
+    const config = vscode.workspace.getConfiguration('parquet-explr');
+
+    if (isOpen !== undefined) {
+      config.update('preference.previewPanelOpen', isOpen, vscode.ConfigurationTarget.Global);
+    }
+    if (height !== undefined) {
+      config.update('preference.previewPanelHeight', height, vscode.ConfigurationTarget.Global);
+    }
+
+    console.log('Preview preference saved:', { isOpen, height });
+  }
+
+  private getPreviewPreference(context: MessageHandlerContext): void {
+    const config = vscode.workspace.getConfiguration('parquet-explr');
+    const isOpen = config.get<boolean>('preference.previewPanelOpen', false);
+    const height = config.get<number>('preference.previewPanelHeight', 25);
+
+    context.panel.webview.postMessage({
+      type: 'previewPreference',
+      isOpen,
+      height,
+    });
+    console.log('Preview preference sent:', { isOpen, height });
+  }
+
+  private saveViewModePreference(message: any, context: MessageHandlerContext): void {
+    const { viewMode } = message;
+    const config = vscode.workspace.getConfiguration('parquet-explr');
+
+    if (viewMode !== undefined) {
+      config.update('preference.viewMode', viewMode, vscode.ConfigurationTarget.Global);
+    }
+
+    console.log('View mode preference saved:', viewMode);
+  }
+
+  private getViewModePreference(context: MessageHandlerContext): void {
+    const config = vscode.workspace.getConfiguration('parquet-explr');
+    const viewMode = config.get<string>('preference.viewMode', 'both');
+
+    context.panel.webview.postMessage({
+      type: 'viewModePreference',
+      viewMode,
+    });
+    console.log('View mode preference sent:', viewMode);
   }
 
   private showNotification(message: any, context: MessageHandlerContext): void {
